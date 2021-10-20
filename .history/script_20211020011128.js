@@ -1,0 +1,6 @@
+const hashingInput = document.getElementById('hashing')
+const costInput = document.getElementById('cost')
+const hashingInput = document.getElementById('hashing')
+const hashingInput = document.getElementById('hashing')
+const hashingInput = document.getElementById('hashing')
+const hashingInput = document.getElementById('hashing')

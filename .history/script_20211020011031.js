@@ -1,0 +1,1 @@
+const hashingInput = document.getElementById('hashing')
