@@ -1,9 +1,14 @@
 let state = {
-    selectedItemPrice: 0,
+    selectedItemPrice: "",
+    selectedItemPriceNumber: 0,
     selecteitemIcon: "",
     hashingPower: "TH/s",
     diff: 0,
-    reward_block: 0
+    reward_block: 0,
+    profitRatioPerDay: 0,
+    revenuePerDay: 0,
+    cost: 0,
+    minedRevenue: 0
 }
 const hashingInput = document.getElementById('hashing')
 const costInput = document.getElementById('cost')
@@ -16,6 +21,20 @@ const khs = document.getElementById("KH/s")
 const mhs = document.getElementById("MH/s")
 const ghs = document.getElementById("GH/s")
 const ths = document.getElementById("TH/s")
+const ppd = document.querySelector('.p-per-day')
+const mpd = document.querySelector('.coin-mined-day')
+const cpd = document.querySelector('.cost-per-day')
+const ppw = document.querySelector('.p-per-week')
+const mpw = document.querySelector('.coin-mined-week')
+const cpw = document.querySelector('.cost-per-week')
+const ppm = document.querySelector('.p-per-month')
+const mpm = document.querySelector('.coin-mined-month')
+const cpm = document.querySelector('.cost-per-month')
+const ppy = document.querySelector('.p-per-year')
+const mpy = document.querySelector('.coin-mined-year')
+const cpy = document.querySelector('.cost-per-year')
+const prpd = document.querySelector('.p-ratio-per-day')
+const profitpm = document.querySelector('.p-ratio-per-month')
 hs.addEventListener('click', hashingPowerClicked)
 khs.addEventListener('click', hashingPowerClicked)
 mhs.addEventListener('click', hashingPowerClicked)
@@ -58,13 +77,30 @@ const handleSubmit = (e) => {
     e.preventDefault()
     const hashing = hashingInput.value
     const cost = costInput.value
-    const pool = poolInput.value
+    // const pool = poolInput.value
     const power = powerInput.value
 }
 mainform.addEventListener("submit", handleSubmit)
 
 // function logic(param) {
+function updateUI() {
+    ppd.textContent = parseFloat(state.revenuePerDay).toFixed(3) + " $"
+    mpd.textContent = parseFloat(state.minedRevenue).toFixed(4) + " " + coins.value
+    cpd.textContent = parseFloat(state.cost).toFixed(3) + " $"
+    ppw.textContent = (state.profitRatioPerDay * 7).toFixed(3) + " $"
+    mpw.textContent = (state.minedRevenue * 7).toFixed(4) + " " + coins.value
+    cpw.textContent = (state.cost * 7).toFixed(3) + " $"
+    ppm.textContent = parseFloat((state.revenuePerDay * 30)).toFixed(3) + " $"
+    cpm.textContent = (state.cost * 30).toFixed(3) + " $"
+    mpm.textContent = (state.minedRevenue * 30).toFixed(4) + " " + coins.value
+    ppy.textContent = (state.revenuePerDay * 365).toFixed(3) + " $"
+    mpy.textContent = (state.minedRevenue * 365).toFixed(4) + " " + coins.value
+    cpy.textContent = (state.cost * 365).toFixed(3) + " " + " $"
+    prpd.textContent = (state.revenuePerDay / state.cost).toFixed(3) + " $"
+    profitpm.textContent = parseFloat(state.revenuePerDay * 30).toFixed(3) + " $"
 
+
+}
 // revenue = $0.14 / TH * 86 TH * 30 days = $361.20
 function calculateFN(e) {
     let factor = 0
@@ -86,33 +122,43 @@ function calculateFN(e) {
             break;
     }
     hashRate = factor * hashingInput.value
-    revenue = (hashRate * state.reward_block * 30 * 86400) / (state.diff * Math.pow(2, 32))
-    cost = (costInput.value * 24 * (powerInput.value / 1000))
-    console.log(revenue)
+    // revenue = (hashRate * state.reward_block * 30 * 86400) / (state.diff * Math.pow(2, 32))
+    // revenueAfterPool
+    state.minedRevenue = (86400 * hashRate * state.reward_block) / (Math.pow(2, 32) * state.diff)
+    state.cost = (costInput.value * 24 * (powerInput.value / 1000))
+    state.revenuePerDay = parseFloat((state.minedRevenue * state.selectedItemPriceNumber) - state.cost).toFixed(2)
+    state.profitRatioPerDay = state.revenuePerDay / state.cost
+
+    updateUI()
+
 }
 // }
 function handleCoinChange(e) {
     switch (e.target.value) {
         case "BTC":
             state.selectedItemPrice = "1 BitCoin = " + parseFloat(BTCPrice).toFixed(2) + "$"
+            state.selectedItemPriceNumber = parseFloat(BTCPrice).toFixed(2)
             state.selecteitemIcon = BTCLogo
             state.diff = BTCDiff
             state.reward_block = BTCReward
             break;
         case "LiteCoin":
             state.selectedItemPrice = "1 LiteCoin = " + parseFloat(LTCPrice).toFixed(2) + "$"
+            state.selectedItemPriceNumber = parseFloat(LTCPrice).toFixed(2)
             state.selecteitemIcon = LTCLogo
             state.diff = LTCDiff
             state.reward_block = LTCReward
             break;
         case "DogeCoin":
             state.selectedItemPrice = "1 DogeCoin = " + parseFloat(DOGEPrice).toFixed(2) + "$"
+            state.selectedItemPriceNumber = parseFloat(DOGEPrice).toFixed(2)
             state.selecteitemIcon = DOGELogo
             state.diff = DOGEDiff
             state.reward_block = DOGEReward
             break;
         case "Kadena":
             state.selectedItemPrice = "1 Kadena = " + parseFloat(KDNPrice).toFixed(2) + "$"
+            state.selectedItemPriceNumber = parseFloat(KDNPrice).toFixed(2)
             state.selecteitemIcon = KDNLogo
             state.diff = KDNDiff
             state.reward_block = KDNReward
@@ -140,6 +186,7 @@ const CoinsData = fetch(`https://api.minerstat.com/v2/coins?list=BTC,ETH,LTC,KDA
     DOGEDiff = response[4].difficulty
     DOGEReward = response[4].reward_block
     state.selectedItemPrice = BTCPrice
+    state.selectedItemPriceNumber = parseFloat(BTCPrice).toFixed(2)
     UNIT.textContent = "1 BitCoin = " + parseFloat(state.selectedItemPrice).toFixed(2) + "$"
     iconImg.setAttribute("src", BTCLogo)
     state.diff = BTCDiff

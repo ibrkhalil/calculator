@@ -1,6 +1,0 @@
-const hashingInput = document.getElementById('hashing')
-const costInput = document.getElementById('cost')
-const poolInput = document.getElementById('pool')
-const powerInput = document.getElementById('power')
-const coins-selectInput = document.getElementById('coins-select')
-const hashingInput = document.getElementById('hashing')

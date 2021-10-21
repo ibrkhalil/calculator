@@ -1,7 +1,0 @@
-const hashingInput = document.getElementById('hashing')
-const costInput = document.getElementById('cost')
-const poolInput = document.getElementById('pool')
-const powerInput = document.getElementById('power')
-const coinsInput = document.getElementById('coins')
-const mainformInput = document.getElementById('mainform')
-mainformInput.addEventListener("submit", "handleSubmit")
