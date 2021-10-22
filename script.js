@@ -35,6 +35,8 @@ const mpy = document.querySelector('.coin-mined-year')
 const cpy = document.querySelector('.cost-per-year')
 const prpd = document.querySelector('.p-ratio-per-day')
 const profitpm = document.querySelector('.p-ratio-per-month')
+const pool = document.getElementById('pool')
+const pfees = document.querySelector('.pfees')
 hs.addEventListener('click', hashingPowerClicked)
 khs.addEventListener('click', hashingPowerClicked)
 mhs.addEventListener('click', hashingPowerClicked)
@@ -98,8 +100,8 @@ function updateUI() {
     cpy.textContent = (state.cost * 365).toFixed(3) + " " + " $"
     prpd.textContent = (state.revenuePerDay / state.cost).toFixed(3) + " $"
     profitpm.textContent = parseFloat(state.revenuePerDay * 30).toFixed(3) + " $"
-
-
+    pfees.textContent = pool.value
+    console.log(pool)
 }
 // revenue = $0.14 / TH * 86 TH * 30 days = $361.20
 function calculateFN(e) {
@@ -122,15 +124,11 @@ function calculateFN(e) {
             break;
     }
     hashRate = factor * hashingInput.value
-    // revenue = (hashRate * state.reward_block * 30 * 86400) / (state.diff * Math.pow(2, 32))
-    // revenueAfterPool
     state.minedRevenue = (86400 * hashRate * state.reward_block) / (Math.pow(2, 32) * state.diff)
     state.cost = (costInput.value * 24 * (powerInput.value / 1000))
     state.revenuePerDay = parseFloat((state.minedRevenue * state.selectedItemPriceNumber) - state.cost).toFixed(2)
     state.profitRatioPerDay = state.revenuePerDay / state.cost
-
     updateUI()
-
 }
 // }
 function handleCoinChange(e) {
@@ -172,7 +170,6 @@ const CoinsData = fetch(`https://api.minerstat.com/v2/coins?list=BTC,ETH,LTC,KDA
     BTCPrice = response[0].price
     BTCDiff = response[0].difficulty
     BTCReward = response[0].reward_block
-    // BTCLogo = response[0].logo_url
     ETHPrice = response[1].price
     ETHDiff = response[1].difficulty
     ETHReward = response[1].reward_block
