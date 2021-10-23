@@ -23,7 +23,7 @@
                         <select name="Coins" id="coins">
                             <option value="BTC">BTC</option>
                             <option value="Litecoin">Litecoin</option>
-                            <option value="DogeCoin">DogeCoin</option>
+                            <option value="Dogecoin">Dogecoin</option>
                             <option value="Kadena">Kadena</option>
                         </select>
 
@@ -103,7 +103,7 @@
                         <div class="card-body">
                             <h5 class="card-title cost-per-month">0.0 $
                                 <hr>
-                                <h5>Pool Fees: <h5 class="h5fees">0.0 $</h5>
+                                <h5>Pool Fees: <h5 id="pfees">0.0 $</h5>
                                 </h5>
                             </h5>
                         </div>
@@ -120,7 +120,8 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 
-    <script>let state = {
+    <script>
+        let state = {
             selectedItemPrice: "",
             selectedItemPriceNumber: 0,
             selecteitemIcon: "",
@@ -136,7 +137,7 @@
         const hashingInput = document.getElementById('hashing')
         const costInput = document.getElementById('cost')
         const poolInput = document.getElementById('pool')
-        const pfees = document.querySelector('.pfees')
+        const pfees = document.getElementById('pfees')
         const powerInput = document.getElementById('power')
         const coinsInput = document.getElementById('coins')
         const mainform = document.getElementById('mainform')
@@ -219,16 +220,16 @@
             let factor = 0
             switch (state.hashingPower) {
                 case "TH/s":
-                    factor = 1e+12
+                    factor = 1e12
                     break;
                 case "GH/s":
-                    factor = 1e+9
+                    factor = 1e9
                     break;
                 case "MH/s":
-                    factor = 1e+6
+                    factor = 1e6
                     break;
                 case "KH/s":
-                    factor = 1e+6
+                    factor = 1e3
                     break;
                 case "H/s":
                     factor = 1
@@ -236,9 +237,6 @@
             }
             hashRate = factor * hashingInput.value
             state.cost = (costInput.value * 24 * (powerInput.value / 1000))
-            // if (coins.value == "BTC") {
-            //     state.revenuePerDay = (hashRate * state.reward * 24) * state.selectedItemPriceNumber - (state.cost)
-            // } else {
             state.revenuePerDay = (hashRate * 24 * state.reward * state.selectedItemPriceNumber)
             console.log((hashRate * 24 * state.reward * state.selectedItemPriceNumber), state.cost)
             // }
@@ -248,7 +246,7 @@
         function handleCoinChange(e) {
             switch (e.target.value) {
                 case "BTC":
-                    state.selectedItemPrice = "1 BitCoin = " + parseFloat(BTCPrice).toFixed(2) + "$"
+                    state.selectedItemPrice = "1 Bitcoin = " + parseFloat(BTCPrice).toFixed(2) + "$"
                     state.selectedItemPriceNumber = BTCPrice
                     state.selecteitemIcon = BTCLogo
                     state.diff = BTCDiff
@@ -262,8 +260,8 @@
                     state.reward = LTCReward
                     state.HashRate = LTCHash
                     break;
-                case "DogeCoin":
-                    state.selectedItemPrice = "1 DogeCoin = " + parseFloat(DOGEPrice).toFixed(2) + "$"
+                case "Dogecoin":
+                    state.selectedItemPrice = "1 Dogecoin = " + parseFloat(DOGEPrice).toFixed(2) + "$"
                     state.selectedItemPriceNumber = DOGEPrice
                     state.selecteitemIcon = DOGELogo
                     state.diff = DOGEDiff
@@ -305,12 +303,11 @@
             DOGEHash = response[4].network_hashrate
             state.selectedItemPrice = BTCPrice
             state.selectedItemPriceNumber = parseFloat(BTCPrice).toFixed(2)
-            UNIT.textContent = "1 BitCoin = " + parseFloat(state.selectedItemPrice).toFixed(2) + "$"
+            UNIT.textContent = "1 Bitcoin = " + parseFloat(state.selectedItemPrice).toFixed(2) + "$"
             iconImg.setAttribute("src", BTCLogo)
             state.diff = BTCDiff
             state.reward = BTCReward
-            console.log(response)
-
+            console.log(response);
         })
         let xaccesstoken = "coinranking5f7bb632f3743c6bfa7b7b63addb54cf7ef02e166aa0c83e"
 
